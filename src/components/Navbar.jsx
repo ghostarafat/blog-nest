@@ -1,13 +1,22 @@
 "use client";
+
 import Link from "next/link";
-import { useState } from "react";
-import SearchBar from "./SearchBar";
+import { useState, useEffect } from "react";
+import { auth } from "@/firebase/firebase.config";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [user, setUser] = useState(null);
 
-  // dummy logged-in state (REAL auth pore add korbo)
-  const isLoggedIn = false;
+  // Listen for Firebase auth changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <nav className="sticky top-0 bg-white shadow-md z-50">
@@ -31,37 +40,55 @@ export default function Navbar() {
           <Link href="/contact" className="hover:text-indigo-600">
             Contact
           </Link>
-          <SearchBar /> {/* Desktop search bar */}
-          {!isLoggedIn ? (
+
+          {/* If NOT logged in */}
+          {!user && (
             <Link
               href="/login"
               className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
             >
               Login
             </Link>
-          ) : (
+          )}
+
+          {/* After Login */}
+          {user && (
             <div className="relative">
-              <button className="bg-gray-100 px-4 py-2 rounded-md">
-                Profile ▼
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="bg-gray-100 px-4 py-2 rounded-md"
+              >
+                {user.displayName || "User"} ▼
               </button>
-              <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg border rounded-md p-2">
-                <p className="px-2 py-1 text-sm text-gray-600">User Name</p>
-                <Link
-                  href="/add-product"
-                  className="block px-2 py-1 hover:bg-gray-100"
-                >
-                  Add Product
-                </Link>
-                <Link
-                  href="/manage-products"
-                  className="block px-2 py-1 hover:bg-gray-100"
-                >
-                  Manage Products
-                </Link>
-                <button className="w-full text-left px-2 py-1 hover:bg-gray-100">
-                  Logout
-                </button>
-              </div>
+
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg border rounded-md p-2">
+                  <p className="px-2 py-1 text-sm text-gray-600 border-b">
+                    {user.email}
+                  </p>
+
+                  <Link
+                    href="/add-product"
+                    className="block px-2 py-1 hover:bg-gray-100"
+                  >
+                    Add Product
+                  </Link>
+
+                  <Link
+                    href="/manage-products"
+                    className="block px-2 py-1 hover:bg-gray-100"
+                  >
+                    Manage Products
+                  </Link>
+
+                  <button
+                    onClick={() => signOut(auth)}
+                    className="w-full text-left px-2 py-1 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -90,23 +117,38 @@ export default function Navbar() {
           <Link href="/contact" className="block">
             Contact
           </Link>
-          <SearchBar /> {/* Mobile search bar */}
-          {!isLoggedIn ? (
+
+          {/* If NOT logged in */}
+          {!user && (
             <Link
               href="/login"
               className="block bg-indigo-600 text-white px-4 py-2 rounded-md w-fit"
             >
               Login
             </Link>
-          ) : (
+          )}
+
+          {/* After Login */}
+          {user && (
             <>
-              <Link href="/add-product" className="block">
+              <p className="text-gray-600 text-sm">{user.email}</p>
+
+              <Link href="/add-product" className="block hover:text-indigo-600">
                 Add Product
               </Link>
-              <Link href="/manage-products" className="block">
+              <Link
+                href="/manage-products"
+                className="block hover:text-indigo-600"
+              >
                 Manage Products
               </Link>
-              <button className="block">Logout</button>
+
+              <button
+                onClick={() => signOut(auth)}
+                className="block hover:text-indigo-600"
+              >
+                Logout
+              </button>
             </>
           )}
         </div>
