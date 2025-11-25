@@ -4,6 +4,7 @@ import Link from "next/link";
 import { auth } from "../../firebase/firebase.config";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -19,15 +20,41 @@ export default function RegisterPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validatePassword = (password) => {
+    const minLength = /.{6,}/;
+    const uppercase = /[A-Z]/;
+    const lowercase = /[a-z]/;
+
+    if (!minLength.test(password)) {
+      toast.error("Password must be at least 6 characters long");
+      return false;
+    }
+    if (!uppercase.test(password)) {
+      toast.error("Password must contain at least 1 uppercase letter");
+      return false;
+    }
+    if (!lowercase.test(password)) {
+      toast.error("Password must contain at least 1 lowercase letter");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!");
+      return;
+    }
+
+    if (!validatePassword(formData.password)) {
       return;
     }
 
     try {
+      const loadingToast = toast.loading("Creating account...");
+
       // Create User in Firebase
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -40,14 +67,18 @@ export default function RegisterPage() {
         displayName: formData.name,
       });
 
+      toast.dismiss(loadingToast);
+      toast.success("Account created successfully!");
       router.push("/login");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || "Failed to create account");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <Toaster position="top-center" reverseOrder={false} />
+
       <div className="max-w-md w-full bg-white shadow-md rounded-lg p-6">
         <h1 className="text-3xl font-bold mb-6 text-center text-indigo-600">
           Sign Up

@@ -8,6 +8,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -17,69 +18,79 @@ export default function LoginPage() {
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     try {
+      const loadingToast = toast.loading("Logging in...");
       await signInWithEmailAndPassword(auth, email, password);
+      toast.dismiss(loadingToast);
+      toast.success("Login successful!");
       router.push("/");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || "Login failed!");
     }
   };
 
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
+      const loadingToast = toast.loading("Signing in with Google...");
       await signInWithPopup(auth, provider);
+      toast.dismiss(loadingToast);
+      toast.success("Login successful!");
       router.push("/");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || "Google login failed!");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 mt-20 border rounded-lg shadow">
-      <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <Toaster position="top-center" reverseOrder={false} />
 
-      <form className="space-y-3" onSubmit={handleEmailLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 border rounded"
-        />
+      <div className="max-w-md w-full p-6 bg-white border rounded-lg shadow">
+        <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
 
-        <input
-          type="password"
-          placeholder="Password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 border rounded"
-        />
+        <form className="space-y-3" onSubmit={handleEmailLogin}>
+          <input
+            type="email"
+            placeholder="Email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
 
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
+          >
+            Login
+          </button>
+        </form>
+
+        {/* Google Login */}
         <button
-          type="submit"
-          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
+          onClick={handleGoogleLogin}
+          className="w-full mt-3 bg-red-600 text-white py-2 rounded hover:bg-red-700 transition"
         >
-          Login
+          Sign in with Google
         </button>
-      </form>
 
-      {/* Google Login */}
-      <button
-        onClick={handleGoogleLogin}
-        className="w-full mt-3 bg-red-600 text-white py-2 rounded hover:bg-red-700 transition"
-      >
-        Sign in with Google
-      </button>
-
-      {/* Register Link */}
-      <p className="mt-4 text-center text-gray-700">
-        Don't have an account?{" "}
-        <Link href="/register" className="text-indigo-600 hover:underline">
-          Register
-        </Link>
-      </p>
+        {/* Register Link */}
+        <p className="mt-4 text-center text-gray-700">
+          Don't have an account?{" "}
+          <Link href="/signup" className="text-indigo-600 hover:underline">
+            Register
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

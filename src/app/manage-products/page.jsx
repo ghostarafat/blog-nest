@@ -12,7 +12,7 @@ export default function ManageProductsPage() {
   // Fetch blog posts
   const fetchPosts = async () => {
     try {
-      const res = await fetch("http://localhost:5000/products"); // backend API
+      const res = await fetch("https://blog-nest-api-server.vercel.app"); // backend API
       if (!res.ok) throw new Error("Failed to fetch posts");
 
       const data = await res.json();
@@ -34,7 +34,7 @@ export default function ManageProductsPage() {
     if (!confirm("Are you sure you want to delete this post?")) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/products/${id}`, {
+      const res = await fetch(`https://blog-nest-api-server.vercel.app/${id}`, {
         method: "DELETE",
       });
 

@@ -1,4 +1,6 @@
 "use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Slider from "react-slick";
@@ -10,6 +12,24 @@ import "slick-carousel/slick/slick-theme.css";
 export default function HomePage() {
   const router = useRouter();
 
+  // ===== Latest Posts State =====
+  const [latestPosts, setLatestPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchLatestPosts = async () => {
+      try {
+        const res = await fetch("https://blog-nest-api-server.vercel.app");
+        const data = await res.json();
+        const latest = [...data].reverse().slice(0, 3); // latest 3 posts
+        setLatestPosts(latest);
+      } catch (err) {
+        console.error("Failed to fetch latest posts:", err);
+      }
+    };
+    fetchLatestPosts();
+  }, []);
+
+  // ===== Slider Settings + Slides =====
   const settings = {
     dots: true,
     infinite: true,
@@ -18,7 +38,7 @@ export default function HomePage() {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 4000,
-    arrows: false, // custom arrows removed
+    arrows: false,
     appendDots: (dots) => (
       <div className="absolute bottom-3 sm:bottom-5 w-full flex justify-center">
         <ul className="flex space-x-2 sm:space-x-3">{dots}</ul>
@@ -35,7 +55,7 @@ export default function HomePage() {
       tagline: "Write. Share. Inspire.",
     },
     {
-      image: "https://i.postimg.cc/RZHTpw78/ct2.png",
+      image: "https://i.postimg.cc/fbh9qX9c/feature4.png",
       tagline: "Your Ideas Deserve a Beautiful Home.",
     },
     {
@@ -46,7 +66,7 @@ export default function HomePage() {
 
   return (
     <div className="space-y-16">
-      {/* ===== Hero Banner Slider Section ===== */}
+      {/* ===== Hero Section ===== */}
       <section className="relative w-full max-w-[1440px] mx-auto overflow-hidden">
         <Slider {...settings}>
           {slides.map((slide, index) => (
@@ -61,9 +81,13 @@ export default function HomePage() {
                 className="object-cover brightness-75"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex flex-col items-center justify-center text-center px-4 sm:px-6 md:px-10">
-                <h1 className="text-white text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6 drop-shadow-lg">
+                <h1 className="text-white text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold mb-2 sm:mb-4 drop-shadow-lg">
                   {slide.tagline}
                 </h1>
+                <p className="text-white text-sm sm:text-lg md:text-xl mb-6 opacity-90 max-w-2xl">
+                  Discover tools to write, publish, organize, and grow your
+                  content effortlessly.
+                </p>
                 <button
                   onClick={() => router.push("/items")}
                   className="bg-yellow-400 text-black font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded shadow-lg hover:bg-yellow-500 transition-all text-sm sm:text-base md:text-lg"
@@ -77,65 +101,116 @@ export default function HomePage() {
       </section>
 
       {/* ===== Section 1: Features ===== */}
-      <section className="max-w-6xl mx-auto px-6">
-        <h2 className="text-3xl font-bold mb-8 text-center">Our Features</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="p-6 border rounded-lg hover:shadow-lg transition">
-            <h3 className="font-semibold text-xl mb-2">Write Seamlessly</h3>
-            <p className="text-gray-600">
-              A clean, distraction-free writing experience.
+      <section className="max-w-6xl mx-auto px-6 py-16">
+        <h2 className="text-3xl font-bold mb-12 text-center">Our Features</h2>
+
+        <div className="grid gap-8 md:grid-cols-3">
+          <div className="p-8 border border-gray-300 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all bg-white">
+            <h3 className="font-semibold text-2xl mb-3">Write Seamlessly</h3>
+            <p className="text-gray-600 leading-relaxed">
+              A clean, distraction-free writing experience built for focus.
             </p>
           </div>
-          <div className="p-6 border rounded-lg hover:shadow-lg transition">
-            <h3 className="font-semibold text-xl mb-2">Organize Smartly</h3>
-            <p className="text-gray-600">
-              Manage your blogs, items & drafts effortlessly.
+
+          <div className="p-8 border border-gray-300 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all bg-white">
+            <h3 className="font-semibold text-2xl mb-3">Organize Smartly</h3>
+            <p className="text-gray-600 leading-relaxed">
+              Manage blogs, items, and drafts with clarity and ease.
             </p>
           </div>
-          <div className="p-6 border rounded-lg hover:shadow-lg transition">
-            <h3 className="font-semibold text-xl mb-2">Publish Instantly</h3>
-            <p className="text-gray-600">Go live with one click — anytime.</p>
+
+          <div className="p-8 border border-gray-300 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all bg-white">
+            <h3 className="font-semibold text-2xl mb-3">Publish Instantly</h3>
+            <p className="text-gray-600 leading-relaxed">
+              Go live anytime with a simple one-click publish.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* ===== Section 2: Products / Cards ===== */}
-      <section className="bg-gray-50 py-16 px-6">
-        <h2 className="text-3xl font-bold mb-8 text-center">Top Items</h2>
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div
-              key={i}
-              className="border rounded-lg p-4 hover:shadow-lg transition"
-            >
-              <div className="h-40 w-full bg-gray-200 mb-4 rounded-lg"></div>
-              <h3 className="font-semibold text-lg mb-1">Item {i}</h3>
-              <p className="text-gray-600 mb-2">Short description goes here.</p>
-              <p className="font-bold">$19.{i}9</p>
-            </div>
-          ))}
-        </div>
+      {/* ===== Section 2: Latest Posts ===== */}
+      <section className="bg-gray-50 py-20 px-6">
+        <h2 className="text-3xl font-bold mb-12 text-center">Latest Posts</h2>
+
+        {latestPosts.length === 0 ? (
+          <p className="text-center text-gray-500">No posts available.</p>
+        ) : (
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {latestPosts.map((post) => (
+              <div
+                key={post._id}
+                className="border border-gray-200 rounded-xl p-5 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all"
+              >
+                {/* Image */}
+                <div className="h-44 w-full bg-gray-100 mb-4 rounded-lg overflow-hidden">
+                  {post.image ? (
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-400 flex items-center justify-center h-full">
+                      No Image
+                    </span>
+                  )}
+                </div>
+
+                {/* Title */}
+                <h3 className="font-semibold text-xl mb-2 line-clamp-1">
+                  {post.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-gray-600 text-sm mb-3 line-clamp-2 leading-relaxed">
+                  {post.shortDescription ||
+                    post.description ||
+                    "No description available."}
+                </p>
+
+                {/* Meta */}
+                <div className="text-gray-500 text-xs mb-4 flex justify-between">
+                  <span>{post.category || "Uncategorized"}</span>
+                  <span>{post.publishDate || "-"}</span>
+                </div>
+
+                {/* Button */}
+                <Link
+                  href={`/items/${post._id}`}
+                  className="block w-full bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-center hover:bg-indigo-700 transition"
+                >
+                  Read More
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ===== Section 3: Testimonials ===== */}
-      <section className="max-w-6xl mx-auto px-6">
-        <h2 className="text-3xl font-bold mb-8 text-center">Testimonials</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="p-6 border rounded-lg hover:shadow-lg transition">
-            <p className="text-gray-600 mb-2">
+      <section className="max-w-6xl mx-auto px-6 py-20">
+        <h2 className="text-3xl font-bold mb-12 text-center">Testimonials</h2>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="p-8 border border-gray-200 bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
+            <p className="text-gray-600 italic mb-4">
               “This app helps me publish faster!”
             </p>
-            <p className="font-semibold">– Arif</p>
+            <p className="font-semibold text-gray-800 text-right">– Arif</p>
           </div>
-          <div className="p-6 border rounded-lg hover:shadow-lg transition">
-            <p className="text-gray-600 mb-2">
+
+          <div className="p-8 border border-gray-200 bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
+            <p className="text-gray-600 italic mb-4">
               “Perfect for managing my blog.”
             </p>
-            <p className="font-semibold">– Rafi</p>
+            <p className="font-semibold text-gray-800 text-right">– Rafi</p>
           </div>
-          <div className="p-6 border rounded-lg hover:shadow-lg transition">
-            <p className="text-gray-600 mb-2">“Clean UI, super easy to use.”</p>
-            <p className="font-semibold">– Jannat</p>
+
+          <div className="p-8 border border-gray-200 bg-white rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all">
+            <p className="text-gray-600 italic mb-4">
+              “Clean UI, super easy to use.”
+            </p>
+            <p className="font-semibold text-gray-800 text-right">– Jannat</p>
           </div>
         </div>
       </section>
@@ -146,13 +221,13 @@ export default function HomePage() {
           Ready to get started?
         </h2>
         <p className="mb-6 text-lg md:text-xl">
-          Sign up or explore our items now!
+          Sign up or explore our posts now!
         </p>
         <Link
           href="/items"
           className="bg-white text-indigo-600 font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100 transition"
         >
-          Explore Items
+          Explore Posts
         </Link>
       </section>
 
@@ -177,7 +252,7 @@ export default function HomePage() {
           ].map((item, i) => (
             <div
               key={i}
-              className={`border rounded-lg p-5 cursor-pointer hover:shadow-md hover:-translate-y-1 transition ${item.color}`}
+              className={`border border-gray-400 rounded-lg p-5 cursor-pointer hover:shadow-md hover:-translate-y-1 transition ${item.color}`}
             >
               <h3 className="font-semibold text-lg">{item.name}</h3>
             </div>
@@ -198,7 +273,7 @@ export default function HomePage() {
             <input
               type="email"
               placeholder="Enter your email"
-              className="w-full sm:w-2/3 px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full sm:w-2/3 px-4 py-3 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             <button className="bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
               Subscribe
