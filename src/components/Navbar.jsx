@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import SearchBar from "./SearchBar";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -30,7 +31,7 @@ export default function Navbar() {
           <Link href="/contact" className="hover:text-indigo-600">
             Contact
           </Link>
-
+          <SearchBar /> {/* Desktop search bar */}
           {!isLoggedIn ? (
             <Link
               href="/login"
@@ -43,7 +44,6 @@ export default function Navbar() {
               <button className="bg-gray-100 px-4 py-2 rounded-md">
                 Profile ▼
               </button>
-
               <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg border rounded-md p-2">
                 <p className="px-2 py-1 text-sm text-gray-600">User Name</p>
                 <Link
@@ -90,7 +90,7 @@ export default function Navbar() {
           <Link href="/contact" className="block">
             Contact
           </Link>
-
+          <SearchBar /> {/* Mobile search bar */}
           {!isLoggedIn ? (
             <Link
               href="/login"

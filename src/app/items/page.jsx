@@ -1,9 +1,12 @@
 "use client";
-import ProtectedRoute from "../../firebase/firebase.configProtectedRoute";
+import { useRouter } from "next/navigation";
+import ProtectedRoute from "../../firebase/ProtectedRoute";
 import Link from "next/link";
 
 export default function ItemListPage() {
-  // Sample data
+  const router = useRouter();
+
+  // Sample data (backend later)
   const items = [
     {
       id: 1,
@@ -60,7 +63,7 @@ export default function ItemListPage() {
               <p className="text-gray-600 text-sm mb-2">{item.description}</p>
               <p className="font-semibold mb-3">{item.price}</p>
               <Link
-                href={`/item-details/${item.id}`}
+                href={`/items/${item.id}`}
                 className="inline-block bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 transition"
               >
                 Details

@@ -3,32 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import Slider from "react-slick";
 import { useRouter } from "next/navigation";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 export default function HomePage() {
   const router = useRouter();
-
-  // Custom arrows
-  const NextArrow = ({ onClick }) => (
-    <div
-      className="absolute top-1/2 right-3 sm:right-5 z-10 cursor-pointer text-white bg-black/30 p-2 sm:p-3 rounded-full hover:bg-black/50 transition"
-      onClick={onClick}
-    >
-      <ChevronRightIcon className="w-5 sm:w-6 h-5 sm:h-6" />
-    </div>
-  );
-
-  const PrevArrow = ({ onClick }) => (
-    <div
-      className="absolute top-1/2 left-3 sm:left-5 z-10 cursor-pointer text-white bg-black/30 p-2 sm:p-3 rounded-full hover:bg-black/50 transition"
-      onClick={onClick}
-    >
-      <ChevronLeftIcon className="w-5 sm:w-6 h-5 sm:h-6" />
-    </div>
-  );
 
   const settings = {
     dots: true,
@@ -38,9 +18,7 @@ export default function HomePage() {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 4000,
-    arrows: true,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
+    arrows: false, // custom arrows removed
     appendDots: (dots) => (
       <div className="absolute bottom-3 sm:bottom-5 w-full flex justify-center">
         <ul className="flex space-x-2 sm:space-x-3">{dots}</ul>
@@ -76,15 +54,12 @@ export default function HomePage() {
               key={index}
               className="relative h-[230px] sm:h-[400px] md:h-[500px] lg:h-[700px] overflow-hidden"
             >
-              {/* Image */}
               <Image
                 src={slide.image}
                 alt={`Slide ${index + 1}`}
                 fill
                 className="object-cover brightness-75"
               />
-
-              {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent flex flex-col items-center justify-center text-center px-4 sm:px-6 md:px-10">
                 <h1 className="text-white text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold mb-4 sm:mb-6 drop-shadow-lg">
                   {slide.tagline}
@@ -181,12 +156,11 @@ export default function HomePage() {
         </Link>
       </section>
 
-      {/* ===== Section 6: Categories ===== */}
+      {/* ===== Section 5: Categories ===== */}
       <section className="max-w-6xl mx-auto px-6 py-16">
         <h2 className="text-3xl font-bold mb-10 text-center">
           Browse by Category
         </h2>
-
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[
             { name: "Writing Tips", color: "bg-indigo-100 text-indigo-700" },
@@ -211,7 +185,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ===== Section 7: Newsletter Signup ===== */}
+      {/* ===== Section 6: Newsletter Signup ===== */}
       <section className="bg-gray-100 py-16 px-6">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4">Join Our Newsletter</h2>

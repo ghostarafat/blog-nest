@@ -1,18 +1,20 @@
+// 📂 src/app/items/[id]/page.jsx
 "use client";
 import ProtectedRoute from "../../../firebase/ProtectedRoute";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 
 export default function ItemDetailsPage() {
   const router = useRouter();
   const { id } = useParams();
 
-  // Sample single item data (replace with real data / Firebase later)
+  // Sample single item data (replace with backend later)
   const item = {
     id,
     title: `Item ${id}`,
-    description: `This is the full description for Item ${id}. Lorem ipsum dolor sit amet.`,
+    description: `This is the full description for Item ${id}. Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
     price: `$${10 * id}`,
-    date: "2025-11-23",
+    date: "2025-11-25",
   };
 
   return (
