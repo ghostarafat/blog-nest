@@ -28,7 +28,7 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
           <div>
             <Image
-              src="https://i.postimg.cc/qRBw0XxQ/about-image.png"
+              src="https://i.postimg.cc/GmRDN1Wv/about.png"
               alt="Our Story"
               width={600}
               height={400}
