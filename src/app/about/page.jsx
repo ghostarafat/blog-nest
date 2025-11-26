@@ -57,17 +57,17 @@ export default function AboutPage() {
       <section className="max-w-6xl mx-auto px-6 space-y-8">
         <h2 className="text-3xl font-bold text-center">Meet Our Team</h2>
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="p-6 border rounded-lg hover:shadow-lg transition text-center">
+          <div className="p-6 border border-gray-400 rounded-lg hover:shadow-lg transition text-center">
             <div className="h-40 w-40 mx-auto mb-4 bg-gray-200 rounded-full"></div>
             <h3 className="font-semibold text-xl mb-1">Alice</h3>
             <p className="text-gray-600">Founder & CEO</p>
           </div>
-          <div className="p-6 border rounded-lg hover:shadow-lg transition text-center">
+          <div className="p-6 border border-gray-400 rounded-lg hover:shadow-lg transition text-center">
             <div className="h-40 w-40 mx-auto mb-4 bg-gray-200 rounded-full"></div>
             <h3 className="font-semibold text-xl mb-1">Bob</h3>
             <p className="text-gray-600">Lead Developer</p>
           </div>
-          <div className="p-6 border rounded-lg hover:shadow-lg transition text-center">
+          <div className="p-6 border border-gray-400 rounded-lg hover:shadow-lg transition text-center">
             <div className="h-40 w-40 mx-auto mb-4 bg-gray-200 rounded-full"></div>
             <h3 className="font-semibold text-xl mb-1">Carol</h3>
             <p className="text-gray-600">Marketing Head</p>
