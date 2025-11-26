@@ -18,7 +18,9 @@ export default function HomePage() {
   useEffect(() => {
     const fetchLatestPosts = async () => {
       try {
-        const res = await fetch("https://blog-nest-api-server.vercel.app");
+        const res = await fetch(
+          "https://blog-nest-api-server.vercel.app/items"
+        );
         const data = await res.json();
         const latest = [...data].reverse().slice(0, 3); // latest 3 posts
         setLatestPosts(latest);

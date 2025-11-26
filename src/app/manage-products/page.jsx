@@ -12,9 +12,8 @@ export default function ManageProductsPage() {
   // Fetch blog posts
   const fetchPosts = async () => {
     try {
-      const res = await fetch("https://blog-nest-api-server.vercel.app"); // backend API
+      const res = await fetch("https://blog-nest-api-server.vercel.app/items");
       if (!res.ok) throw new Error("Failed to fetch posts");
-
       const data = await res.json();
       setPosts(data);
     } catch (err) {
@@ -34,9 +33,12 @@ export default function ManageProductsPage() {
     if (!confirm("Are you sure you want to delete this post?")) return;
 
     try {
-      const res = await fetch(`https://blog-nest-api-server.vercel.app/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `https://blog-nest-api-server.vercel.app/items/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (res.ok) {
         setPosts((prev) => prev.filter((p) => p._id !== id));
@@ -52,80 +54,135 @@ export default function ManageProductsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-6xl mx-auto p-6 mt-10">
+      <div className="max-w-6xl mx-auto px-4 py-10">
         <Toaster />
-        <h1 className="text-3xl font-bold mb-6 text-center text-indigo-600">
-          Manage Blog Posts
-        </h1>
-
-        {loading ? (
-          <p className="text-center">Loading...</p>
-        ) : posts.length === 0 ? (
-          <p className="text-center">No posts found.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border rounded-lg shadow-md">
-              <thead>
-                <tr className="bg-gray-100 text-left">
-                  <th className="p-3 border">Image</th>
-                  <th className="p-3 border">Title</th>
-                  <th className="p-3 border">Short Description</th>
-                  <th className="p-3 border">Category</th>
-                  <th className="p-3 border">Publish Date</th>
-                  <th className="p-3 border text-center">Actions</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {posts.map((post) => (
-                  <tr key={post._id} className="border-b hover:bg-gray-50">
-                    <td className="p-3">
-                      {post.image ? (
-                        <img
-                          src={post.image}
-                          alt={post.title}
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">
-                          No Image
-                        </div>
-                      )}
-                    </td>
-
-                    <td className="p-3 font-medium">{post.title}</td>
-
-                    <td className="p-3">
-                      {post.shortDescription.length > 50
-                        ? post.shortDescription.slice(0, 50) + "..."
-                        : post.shortDescription}
-                    </td>
-
-                    <td className="p-3">{post.category || "-"}</td>
-
-                    <td className="p-3">{post.publishDate || "-"}</td>
-
-                    <td className="p-3 text-center space-x-2">
-                      <Link
-                        href={`/items/${post._id}`}
-                        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                      >
-                        View
-                      </Link>
-
-                      <button
-                        onClick={() => handleDelete(post._id)}
-                        className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-indigo-600">
+              Manage Blog Posts
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              View, review and delete blog posts from your dashboard.
+            </p>
           </div>
-        )}
+
+          <Link
+            href="/dashboard/add-blog"
+            className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 transition"
+          >
+            + Add New Post
+          </Link>
+        </div>
+
+        {/* Content */}
+        <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-4 sm:p-6">
+          {loading ? (
+            <div className="py-10 text-center text-gray-500 text-sm">
+              Loading posts...
+            </div>
+          ) : posts.length === 0 ? (
+            <div className="py-10 text-center">
+              <p className="text-gray-500 mb-3">No posts found.</p>
+              <Link
+                href="/dashboard/add-blog"
+                className="inline-flex items-center justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 transition"
+              >
+                Create your first post
+              </Link>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full border border-gray-100 rounded-lg overflow-hidden text-sm">
+                <thead>
+                  <tr className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
+                    <th className="p-3 border-b">Image</th>
+                    <th className="p-3 border-b">Title</th>
+                    <th className="p-3 border-b">Short Description</th>
+                    <th className="p-3 border-b">Category</th>
+                    <th className="p-3 border-b">Publish Date</th>
+                    <th className="p-3 border-b text-center">Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {posts.map((post) => (
+                    <tr
+                      key={post._id}
+                      className="border-b last:border-b-0 hover:bg-gray-50/70 transition"
+                    >
+                      {/* Image */}
+                      <td className="p-3 align-middle">
+                        {post.image ? (
+                          <img
+                            src={post.image}
+                            alt={post.title}
+                            className="w-14 h-14 object-cover rounded-md border"
+                          />
+                        ) : (
+                          <div className="w-14 h-14 bg-gray-100 rounded-md flex items-center justify-center text-[10px] text-gray-400 border">
+                            No Image
+                          </div>
+                        )}
+                      </td>
+
+                      {/* Title */}
+                      <td className="p-3 align-middle">
+                        <p className="font-medium text-gray-800 line-clamp-2">
+                          {post.title}
+                        </p>
+                      </td>
+
+                      {/* Short Description */}
+                      <td className="p-3 align-middle max-w-xs">
+                        <p className="text-gray-600 line-clamp-2">
+                          {post.shortDescription?.length > 80
+                            ? post.shortDescription.slice(0, 80) + "..."
+                            : post.shortDescription}
+                        </p>
+                      </td>
+
+                      {/* Category */}
+                      <td className="p-3 align-middle">
+                        <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600">
+                          {post.category || "Uncategorized"}
+                        </span>
+                      </td>
+
+                      {/* Publish Date */}
+                      <td className="p-3 align-middle text-gray-600">
+                        {post.publishDate || "-"}
+                      </td>
+
+                      {/* Actions */}
+                      <td className="p-3 align-middle text-center space-x-2">
+                        <Link
+                          href={`/items/${post._id}`}
+                          className="inline-flex items-center rounded-md bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition"
+                        >
+                          View
+                        </Link>
+
+                        <button
+                          onClick={() => handleDelete(post._id)}
+                          className="inline-flex items-center rounded-md bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700 transition"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {/* Small footer text */}
+              <p className="mt-3 text-[11px] text-gray-400">
+                Tip: Keep your titles short and add clear categories to make
+                managing blogs easier.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </ProtectedRoute>
   );
