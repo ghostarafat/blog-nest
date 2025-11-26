@@ -16,7 +16,10 @@ export default function ItemDetailsPage() {
   // Fetch single blog post from backend
   const fetchPost = async () => {
     try {
-      const res = await fetch(`https://blog-nest-api-server.vercel.app/${id}`);
+      const res = await fetch(
+        `https://blog-nest-api-server.vercel.app/items/${id}`
+      );
+
       if (!res.ok) throw new Error("Post not found");
 
       const data = await res.json();

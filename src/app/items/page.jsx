@@ -1,3 +1,5 @@
+//  src/app/items/page.jsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,7 +16,8 @@ export default function ItemListPage() {
   // Fetch all blog posts from Express API
   const fetchPosts = async () => {
     try {
-      const res = await fetch("https://blog-nest-api-server.vercel.app");
+      const res = await fetch("https://blog-nest-api-server.vercel.app/items");
+
       if (!res.ok) throw new Error("Failed to fetch posts");
 
       const data = await res.json();

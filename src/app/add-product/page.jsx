@@ -35,7 +35,7 @@ export default function AddProductPage() {
       if (res.ok) {
         toast.success("Blog post added successfully! 🎉");
         setTimeout(() => {
-          router.push("/items"); // redirect to posts list
+          router.push("/items");
         }, 800);
       } else {
         toast.error("Failed to add post ❌");
