@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { auth } from "@/firebase/firebase.config";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import { Feather } from "lucide-react";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,7 +23,11 @@ export default function Navbar() {
     <nav className="sticky top-0 bg-white shadow-md z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
-        <Link href="/" className="text-2xl font-bold text-indigo-600">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-2xl font-bold text-indigo-600"
+        >
+          <Feather className="w-7 h-7 text-indigo-600" />
           BlogNest
         </Link>
 
@@ -62,7 +67,7 @@ export default function Navbar() {
               </button>
 
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg border rounded-md p-2">
+                <div className="absolute right-0 mt-2 w-48 bg-white border shadow-lg rounded-md p-2">
                   <p className="px-2 py-1 text-sm text-gray-600 border-b">
                     {user.email}
                   </p>
@@ -136,6 +141,7 @@ export default function Navbar() {
               <Link href="/add-product" className="block hover:text-indigo-600">
                 Add Product
               </Link>
+
               <Link
                 href="/manage-products"
                 className="block hover:text-indigo-600"
