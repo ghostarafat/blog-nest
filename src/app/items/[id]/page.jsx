@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import ProtectedRoute from "../../../firebase/ProtectedRoute";
+
 import toast, { Toaster } from "react-hot-toast";
 
 export default function ItemDetailsPage() {

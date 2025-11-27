@@ -4,8 +4,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
 import toast, { Toaster } from "react-hot-toast";
+import { motion } from "framer-motion";
 
 export default function ItemListPage() {
   const [posts, setPosts] = useState([]);
@@ -17,7 +17,6 @@ export default function ItemListPage() {
   const fetchPosts = async () => {
     try {
       const res = await fetch("https://blog-nest-api-server.vercel.app/items");
-
       if (!res.ok) throw new Error("Failed to fetch posts");
 
       const data = await res.json();
@@ -55,16 +54,31 @@ export default function ItemListPage() {
     <div className="max-w-6xl mx-auto p-6 mt-10">
       <Toaster />
 
-      <h1 className="text-3xl font-bold mb-2 text-center text-indigo-600">
+      <motion.h1
+        className="text-3xl font-bold mb-2 text-center text-indigo-600"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         All Blog Posts
-      </h1>
+      </motion.h1>
 
-      <p className="text-center text-gray-600 mb-6">
+      <motion.p
+        className="text-center text-gray-600 mb-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+      >
         Explore our latest posts, tutorials, and articles curated for you.
-      </p>
+      </motion.p>
 
       {/* Search Bar */}
-      <div className="flex justify-center mb-6">
+      <motion.div
+        className="flex justify-center mb-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+      >
         <input
           type="text"
           placeholder="Search posts..."
@@ -72,25 +86,43 @@ export default function ItemListPage() {
           onChange={handleSearch}
           className="w-full sm:w-2/3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
-      </div>
+      </motion.div>
 
       {loading ? (
         <p className="text-center">Loading posts...</p>
       ) : filteredPosts.length === 0 ? (
         <p className="text-center">No posts found.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+          initial="hidden"
+          animate="show"
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.08,
+              },
+            },
+          }}
+        >
           {filteredPosts.map((post) => (
-            <div
+            <motion.div
               key={post._id}
-              className="border border-gray-400 rounded-lg p-4 shadow hover:shadow-lg transition"
+              className="border border-gray-400 rounded-lg p-4 shadow hover:shadow-xl transition"
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                show: { opacity: 1, y: 0 },
+              }}
+              whileHover={{ scale: 1.03 }}
             >
-              <div className="h-40 bg-gray-200 mb-3 flex items-center justify-center overflow-hidden rounded">
+              <div className="h-40 bg-gray-200 mb-3 flex items-center justify-center overflow-hidden rounded group">
                 {post.image ? (
                   <img
                     src={post.image}
                     alt={post.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />
                 ) : (
                   <span className="text-gray-500">No Image</span>
@@ -114,9 +146,9 @@ export default function ItemListPage() {
               >
                 Details
               </Link>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );
